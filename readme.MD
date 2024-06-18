@@ -23,7 +23,7 @@ Before you begin, ensure you have met the following requirements:
 
     ```sh
     python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate` OR `python -m venv venv` 
     ```
 
 3. **Install the required dependencies:**
