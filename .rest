@@ -1,0 +1,14 @@
+POST http://localhost:8000/api/task/create/
+Content-Type: application/json
+
+{
+    "title": "vb",
+    "description": "nnn",
+    "status": "in_progress",
+    "priority": "low",
+    "due_date": "2024-06-17T16:52",
+    "category": "boomshakur",
+    "assigned_to": 1
+}
+###
+POST http://localhost:8000/api/user

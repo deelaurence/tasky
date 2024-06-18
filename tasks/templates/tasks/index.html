@@ -13,8 +13,25 @@
             <h1 class="text-3xl font-bold">Task Manager</h1>
             <button id="addTaskBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Add Task</button>
         </div>
-        <div id="taskList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Tasks will be loaded here dynamically -->
+        <div id="taskContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div id="inProgressTasks" class="task-status">
+                <h2 class="text-2xl font-bold">In Progress</h2>
+                <div id="in_progressList">
+                    <!-- In Progress tasks will be loaded here dynamically -->
+                </div>
+            </div>
+            <div id="completedTasks" class="task-status">
+                <h2 class="text-2xl font-bold">Completed</h2>
+                <div id="completedList">
+                    <!-- Completed tasks will be loaded here dynamically -->
+                </div>
+            </div>
+            <div id="overdueTasks" class="task-status">
+                <h2 class="text-2xl font-bold">Overdue</h2>
+                <div id="overdueList">
+                    <!-- Overdue tasks will be loaded here dynamically -->
+                </div>
+            </div>
         </div>
     </div>
 

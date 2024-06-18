@@ -34,34 +34,42 @@ def users_list(request):
 def homepage(request):
     return render(request, 'tasks/index.html')
 
-def create_task(request):
-    try:
-        print("View function create_task is executing.")
-        print("Request method:", request.method)
-        print("Request POST data:", request.POST)
-    except Exception as e:
-        print("Exception occurred:", str(e))  # Print the exception details
-        return JsonResponse({'success': False, 'message': 'An error occurred.'})
+# def create_task(request):
+from django.http import JsonResponse
+import json
 
-    # print(request)
-    # # if request.method == 'POST':
-    #     print("Request data:", request.POST)  # Debugging print
-    #     form = TaskForm(request.POST)
-    #     if form.is_valid():
-    #         form.save()
-    #         print("Task created successfully.")  # Debugging print
-    #         return JsonResponse({'success': True, 'message': 'Task created successfully.'})
-    #     else:
-    #         print("Form errors:", form.errors)  # Debugging print
-    #         return JsonResponse({'success': False, 'message': 'Form data is not valid.'})
-    # else:
-    #     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+def create_task(request):
+    print(request)
+    if request.method == 'POST':
+        print("Request data:", request.POST)  # Debugging print
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            print("Task created successfully.")  # Debugging print
+            return JsonResponse({'success': True, 'message': 'Task created successfully.'})
+        else:
+            print("Form errors:", form.errors)  # Debugging print
+            return JsonResponse({'success': False, 'message': 'Form data is not valid.'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method.'})
     
 
 # Retrieve tasks based on status
 def get_tasks(request, status):
-    tasks = Task.objects.filter(status=status)
-    tasks_list = list(tasks.values())
+    tasks = Task.objects.filter(status=status).select_related('assigned_to')
+    tasks_list = [
+        {
+            'id': task.id,
+            'title': task.title,
+            'description': task.description,
+            'status': task.status,
+            'priority': task.priority,
+            'due_date': task.due_date,
+            'category': task.category,
+            'assigned_to': task.assigned_to.username if task.assigned_to else None  # Include username
+        }
+        for task in tasks
+    ]
     return JsonResponse(tasks_list, safe=False)
 
 # Update task
