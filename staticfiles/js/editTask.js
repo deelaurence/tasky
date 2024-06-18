@@ -28,7 +28,7 @@ $(document).on('click', '.editTaskBtn', function () {
             console.log(task);
             $('#taskModal').show();
             $('#modalTitle').text('Edit Task');
-            $('#taskForm').data('id', taskId).html(`
+            $('#editTaskForm').data('id', taskId).html(`
                 <div class="form-group">
                     <input type="text" name="title" value="${task.title}" class="w-full mb-2 required px-3 py-2 border rounded" minlength="3" maxlength="50">
                     <span class="error-message text-red-500"></span>
@@ -85,7 +85,7 @@ $(document).on('click', '.editTaskBtn', function () {
             }
 
             // Enable the submit button if all fields are filled
-            $('#taskForm input, #taskForm textarea, #taskForm select').on('input change', function () {
+            $('#editTaskForm input, #editTaskForm textarea, #editTaskForm select').on('input change', function () {
                 validateField($(this));
                 validateForm();
             });
@@ -127,7 +127,7 @@ function validateField($field) {
 function validateForm() {
     let isValid = true;
 
-    $('#taskForm .required').each(function () {
+    $('#editTaskForm .required').each(function () {
         const $this = $(this);
         validateField($this);
 
