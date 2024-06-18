@@ -4,50 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 </head>
-<body>
-    <div class="container mx-auto">
-        <div class="flex justify-between items-center py-4">
-            <h1 class="text-3xl font-bold">Task Manager</h1>
-            <button id="addTaskBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Add Task</button>
+<style>
+    *{
+        font-family: 'Roboto', 'Poppins', sans-serif;
+    }
+</style>
+<body class="bg-gray-50">
+    <nav class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2 p-4 bg-gray-100 rounded-lg shadow-md">
+        <!-- Search Input -->
+        <div class="relative w-full md:w-auto">
+            <input type="text" id="searchInput" placeholder="Search tasks..."
+                class="w-full md:w-48 px-3 py-2 placeholder-gray-400 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <!-- Heroicon search icon -->
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-4.35-4.35M15 10.5a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0z"></path>
+                </svg>
+            </div>
         </div>
-        <div id="taskContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div id="inProgressTasks" class="task-status">
-                <h2 class="text-2xl font-bold">In Progress</h2>
-                <div id="in_progressList">
+    
+        <!-- Priority Filter -->
+        <select id="priorityFilter"
+            class="w-full md:w-auto px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">All Priorities</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+    
+        <!-- Category Filter -->
+        <select id="categoryFilter"
+            class="w-full md:w-auto px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">All Categories</option>
+            <option value="Design">Design</option>
+            <option value="Cloud">Cloud</option>
+            <option value="Development">Development</option>
+            <option value="Testing">Testing</option>
+        </select>
+    
+        <!-- Due Date Filter -->
+        <input type="date" id="dueDateFilter"
+            class="w-full md:w-auto px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+    
+        <!-- Filter Button -->
+        <button id="filterBtn"
+            class="w-full md:w-auto px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            Filter
+        </button>
+    </nav>
+    
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <h1 class="mb-6 text-3xl font-bold text-gray-700">Tas<span class="font-medium text-gray-500">ky.</span></h1>
+            <div>
+                <button id="addTaskBtn" class="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Add Task
+                </button>
+                <a href="/signup/"  id="addMember" class="bg-green-500 text-white px-4 py-2 rounded shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Add Members
+                </a>
+            </div>
+        </div>
+        <div id="taskContainer" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- In Progress Tasks -->
+            <div id="inProgressTasks" class="task-status bg-white rounded-lg shadow-md p-4">
+                <h2 class="font-bold italic mb-4 text-yellow-600">In Progress</h2>
+                <div id="in_progressList" class="space-y-4">
                     <!-- In Progress tasks will be loaded here dynamically -->
                 </div>
             </div>
-            <div id="completedTasks" class="task-status">
-                <h2 class="text-2xl font-bold">Completed</h2>
-                <div id="completedList">
+    
+            <!-- Completed Tasks -->
+            <div id="completedTasks" class="task-status bg-white rounded-lg shadow-md p-4">
+                <h2 class="font-bold mb-4 text-green-600">Completed</h2>
+                <div id="completedList" class="space-y-4">
                     <!-- Completed tasks will be loaded here dynamically -->
                 </div>
             </div>
-            <div id="overdueTasks" class="task-status">
-                <h2 class="text-2xl font-bold">Overdue</h2>
-                <div id="overdueList">
+    
+            <!-- Overdue Tasks -->
+            <div id="overdueTasks" class="task-status bg-white rounded-lg shadow-md p-4">
+                <h2 class="font-bold mb-4 text-red-600">Overdue</h2>
+                <div id="overdueList" class="space-y-4">
                     <!-- Overdue tasks will be loaded here dynamically -->
                 </div>
             </div>
         </div>
     </div>
-
+    
     <!-- Task Modal -->
     <div id="taskModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
-        <div class="flex items-center justify-center min-h-screen">
+        <div class="flex items-center justify-center min-h-screen px-4 text-center">
             <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                 <h2 id="modalTitle" class="text-2xl font-bold mb-4"></h2>
                 <form id="taskForm">
-                    {% csrf_token %}
+                    <!-- Form fields will be added here dynamically -->
+                </form>
+                <form id="editTaskForm">
                     <!-- Form fields will be added here dynamically -->
                 </form>
             </div>
         </div>
     </div>
     {% load static %}
-    <script src="{% static 'js/main.js' %}"></script>
+    <script type="module" src="{% static 'js/main.js' %}"></script>
+    <script type="module" src="{% static 'js/validateForm.js' %}"></script>
+    
+    <script type="module" src="{% static 'js/createTask.js' %}"></script>
+    <script type="module" src="{% static 'js/editTask.js' %}"></script>
 </body>
 </html>

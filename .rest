@@ -11,4 +11,4 @@ Content-Type: application/json
     "assigned_to": 1
 }
 ###
-POST http://localhost:8000/api/user
+GET http://localhost:8000/api/single-task/1/

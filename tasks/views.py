@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 
 class LoginView(LoginView):
@@ -31,6 +31,7 @@ def users_list(request):
 
 
 # Homepage view
+@login_required
 def homepage(request):
     return render(request, 'tasks/index.html')
 
@@ -41,14 +42,12 @@ import json
 def create_task(request):
     print(request)
     if request.method == 'POST':
-        print("Request data:", request.POST)  # Debugging print
         form = TaskForm(request.POST)
         if form.is_valid():
-            form.save()
-            print("Task created successfully.")  # Debugging print
+            form.save()          
             return JsonResponse({'success': True, 'message': 'Task created successfully.'})
         else:
-            print("Form errors:", form.errors)  # Debugging print
+            
             return JsonResponse({'success': False, 'message': 'Form data is not valid.'})
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
@@ -71,6 +70,28 @@ def get_tasks(request, status):
         for task in tasks
     ]
     return JsonResponse(tasks_list, safe=False)
+
+#get one task by its id
+def get_task(request, task_id):
+    # Retrieve the task object from the database or return 404 if not found
+    task = get_object_or_404(Task, pk=task_id)
+
+    # Serialize task data into JSON-serializable format
+    task_data = {
+        'id': task.id,
+        'title': task.title,
+        'description': task.description,
+        'status': task.status,
+        'priority': task.priority,
+        'due_date': task.due_date,
+        'category': task.category,
+        'assigned_to': task.assigned_to.username if task.assigned_to else None
+    }
+
+    # Return JSON response with the task data
+    return JsonResponse(task_data)
+
+
 
 # Update task
 @csrf_exempt
