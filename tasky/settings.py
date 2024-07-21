@@ -23,10 +23,7 @@ LOGIN_URL = '/signup/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1@d80n90$%j&vasg%-o&@+yg=ak()h-bgk8oy+p9##r_cf28kd'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []

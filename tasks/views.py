@@ -73,6 +73,7 @@ def get_tasks(request, status):
 
 #get one task by its id
 def get_task(request, task_id):
+    
     # Retrieve the task object from the database or return 404 if not found
     task = get_object_or_404(Task, pk=task_id)
 
